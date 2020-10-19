@@ -14,6 +14,7 @@ EndScene::~EndScene()
 
 void EndScene::draw()
 {
+	TextureManager::Instance()->draw("background", 400, 300, 0, 255, true);
 	drawDisplayList();
 }
 
@@ -48,13 +49,15 @@ void EndScene::handleEvents()
 
 void EndScene::start()
 {
-	const SDL_Color blue = { 0, 0, 255, 255 };
-	m_label = new Label("END SCENE", "Dock51", 80, blue, glm::vec2(400.0f, 40.0f));
+	TextureManager::Instance()->load("../Assets/textures/Background.png", "background");
+
+	const SDL_Color Orange = { 255, 140, 0, 0 };
+	m_label = new Label("END SCENE", "Dock51", 80, Orange, glm::vec2(400.0f, 40.0f));
 	m_label->setParent(this);
 	addChild(m_label);
 
 	// Restart Button
-	m_pRestartButton = new Button("../Assets/textures/restartButton.png", "restartButton", RESTART_BUTTON);
+	m_pRestartButton = new Button("../Assets/textures/Replay.png", "Replay", RESTART_BUTTON);
 	m_pRestartButton->getTransform()->position = glm::vec2(400.0f, 400.0f);
 	m_pRestartButton->addEventListener(CLICK, [&]()-> void
 	{

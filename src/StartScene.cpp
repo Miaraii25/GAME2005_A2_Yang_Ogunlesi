@@ -14,6 +14,7 @@ StartScene::~StartScene()
 
 void StartScene::draw()
 {
+	TextureManager::Instance()->draw("background", 400, 300, 0, 255, true);
 	drawDisplayList();
 }
 
@@ -45,19 +46,24 @@ void StartScene::handleEvents()
 
 void StartScene::start()
 {
-	const SDL_Color blue = { 0, 0, 255, 255 };
-	m_pStartLabel = new Label("START SCENE", "Consolas", 80, blue, glm::vec2(400.0f, 40.0f));
+	TextureManager::Instance()->load("../Assets/textures/Background.png", "background");
+
+	const SDL_Color Orange = { 255, 140, 0, 0 };
+	m_pStartLabel = new Label("START SCENE", "Dock51", 80, Orange, glm::vec2(400.0f, 80.0f));
 	m_pStartLabel->setParent(this);
 	addChild(m_pStartLabel);
 
-	m_pInstructionsLabel = new Label("Press 1 to Play", "Consolas", 40, blue, glm::vec2(400.0f, 120.0f));
-	m_pInstructionsLabel->setParent(this);
-	addChild(m_pInstructionsLabel);
+	m_pNameLabel = new Label("MINGKUN YANG (ID:101235517)","PinkChicken-Regular", 40, Orange, glm::vec2(400.0f, 180.0f));
+	m_pNameLabel->setParent(this);
+	addChild(m_pNameLabel);
 
+	m_pNameLabel2 = new Label("MARIAM OGUNLESI (ID:101285729)","PinkChicken-Regular", 40, Orange, glm::vec2(400.0f, 230.0f));
+	m_pNameLabel2->setParent(this);
+	addChild(m_pNameLabel2);
 
-	m_pShip = new Ship();
+	/*m_pShip = new Ship();
 	m_pShip->getTransform()->position = glm::vec2(400.0f, 300.0f); 
-	addChild(m_pShip); 
+	addChild(m_pShip); */
 
 	// Start Button
 	m_pStartButton = new Button();

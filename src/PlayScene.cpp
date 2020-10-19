@@ -1,6 +1,8 @@
 #include "PlayScene.h"
 #include "Game.h"
 #include "EventManager.h"
+#include "Util.h"
+#include <algorithm>
 
 // required for IMGUI
 #include "imgui.h"
@@ -17,13 +19,21 @@ PlayScene::~PlayScene()
 
 void PlayScene::draw()
 {
-	if(EventManager::Instance().isIMGUIActive())
-	{
-		GUI_Function();
-	}
+	TextureManager::Instance()->draw("playscene", 400, 300, 0, 255, true);
+
+	// draw the ramp
+	auto LOSColour = (!m_bPlayerHasLOS) ? glm::vec4(1.0f, 0.0f, 0.0f, 1.0f) : glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+	Util::DrawLine(point[0], point[1], LOSColour);
+	Util::DrawLine(point[1], point[2], LOSColour);
+	Util::DrawLine(point[2], point[0], LOSColour);
 
 	drawDisplayList();
 	SDL_SetRenderDrawColor(Renderer::Instance()->getRenderer(), 255, 255, 255, 255);
+
+	if (EventManager::Instance().isIMGUIActive())
+	{
+		GUI_Function();
+	}
 }
 
 void PlayScene::update()
@@ -116,67 +126,80 @@ void PlayScene::handleEvents()
 
 void PlayScene::start()
 {
+	// Load background
+	TextureManager::Instance()->load("../Assets/backgrounds/playscene.png", "playscene");
+
 	// Set GUI Title
 	m_guiTitle = "Play Scene";
-	
-	// Plane Sprite
-	m_pPlaneSprite = new Plane();
-	addChild(m_pPlaneSprite);
+
+	//Ball
+	m_pBall = new Target();
+	addChild(m_pBall);
 
 	// Player Sprite
 	m_pPlayer = new Player();
 	addChild(m_pPlayer);
 	m_playerFacingRight = true;
 
-	// Back Button
-	m_pBackButton = new Button("../Assets/textures/backButton.png", "backButton", BACK_BUTTON);
-	m_pBackButton->getTransform()->position = glm::vec2(300.0f, 400.0f);
-	m_pBackButton->addEventListener(CLICK, [&]()-> void
-	{
-		m_pBackButton->setActive(false);
-		TheGame::Instance()->changeSceneState(START_SCENE);
-	});
+	rampHeight = 300.0f;
+	rampWidth = 300.0f;
+	pointPosX = 300.0f;
+    pointPosY = 400.0f;
 
-	m_pBackButton->addEventListener(MOUSE_OVER, [&]()->void
-	{
-		m_pBackButton->setAlpha(128);
-	});
+	SetPoint();
+	
 
-	m_pBackButton->addEventListener(MOUSE_OUT, [&]()->void
-	{
-		m_pBackButton->setAlpha(255);
-	});
-	addChild(m_pBackButton);
+	//// Back Button
+	//m_pBackButton = new Button("../Assets/textures/backButton.png", "backButton", BACK_BUTTON);
+	//m_pBackButton->getTransform()->position = glm::vec2(300.0f, 400.0f);
+	//m_pBackButton->addEventListener(CLICK, [&]()-> void
+	//{
+	//	m_pBackButton->setActive(false);
+	//	TheGame::Instance()->changeSceneState(START_SCENE);
+	//});
 
-	// Next Button
-	m_pNextButton = new Button("../Assets/textures/nextButton.png", "nextButton", NEXT_BUTTON);
-	m_pNextButton->getTransform()->position = glm::vec2(500.0f, 400.0f);
-	m_pNextButton->addEventListener(CLICK, [&]()-> void
-	{
-		m_pNextButton->setActive(false);
-		TheGame::Instance()->changeSceneState(END_SCENE);
-	});
+	//m_pBackButton->addEventListener(MOUSE_OVER, [&]()->void
+	//{
+	//	m_pBackButton->setAlpha(128);
+	//});
 
-	m_pNextButton->addEventListener(MOUSE_OVER, [&]()->void
-	{
-		m_pNextButton->setAlpha(128);
-	});
+	//m_pBackButton->addEventListener(MOUSE_OUT, [&]()->void
+	//{
+	//	m_pBackButton->setAlpha(255);
+	//});
+	//addChild(m_pBackButton);
 
-	m_pNextButton->addEventListener(MOUSE_OUT, [&]()->void
-	{
-		m_pNextButton->setAlpha(255);
-	});
+	//// Next Button
+	//m_pNextButton = new Button("../Assets/textures/nextButton.png", "nextButton", NEXT_BUTTON);
+	//m_pNextButton->getTransform()->position = glm::vec2(500.0f, 400.0f);
+	//m_pNextButton->addEventListener(CLICK, [&]()-> void
+	//{
+	//	m_pNextButton->setActive(false);
+	//	TheGame::Instance()->changeSceneState(END_SCENE);
+	//});
 
-	addChild(m_pNextButton);
+	//m_pNextButton->addEventListener(MOUSE_OVER, [&]()->void
+	//{
+	//	m_pNextButton->setAlpha(128);
+	//});
+
+	//m_pNextButton->addEventListener(MOUSE_OUT, [&]()->void
+	//{
+	//	m_pNextButton->setAlpha(255);
+	//});
+
+	//addChild(m_pNextButton);
 
 	/* Instructions Label */
-	m_pInstructionsLabel = new Label("Press the backtick (`) character to toggle Debug View", "Consolas");
+	const SDL_Color Gold = { 212,175, 55, 0 };
+	m_pInstructionsLabel = new Label("Press the backtick (`) character to toggle Debug View", "Consolas", 20, Gold);
 	m_pInstructionsLabel->getTransform()->position = glm::vec2(Config::SCREEN_WIDTH * 0.5f, 500.0f);
-
 	addChild(m_pInstructionsLabel);
+
+	
 }
 
-void PlayScene::GUI_Function() const
+void PlayScene::GUI_Function() 
 {
 	// Always open with a NewFrame
 	ImGui::NewFrame();
@@ -184,28 +207,51 @@ void PlayScene::GUI_Function() const
 	// See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
 	//ImGui::ShowDemoWindow();
 	
-	ImGui::Begin("Your Window Title Goes Here", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
+	ImGui::Begin("Physics Control", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
 
-	if(ImGui::Button("My Button"))
-	{
-		std::cout << "My Button Pressed" << std::endl;
+	if (ImGui::Button("Throw")) {
+		m_pBall->doThrow();
 	}
 
 	ImGui::Separator();
 
-	static float float3[3] = { 0.0f, 1.0f, 1.5f };
-	if(ImGui::SliderFloat3("My Slider", float3, 0.0f, 2.0f))
-	{
-		std::cout << float3[0] << std::endl;
-		std::cout << float3[1] << std::endl;
-		std::cout << float3[2] << std::endl;
-		std::cout << "---------------------------\n";
+	static bool isGravityEnabled = false;
+	if (ImGui::Checkbox("Gravity", &isGravityEnabled)) {
+		m_pBall->isGravityEnabled = isGravityEnabled;
 	}
 	
+	static int xPlayerPos = 300;
+	if (ImGui::SliderInt("Player Position X", &xPlayerPos, 0, 800)) {
+		m_pPlayer->getTransform()->position.x = xPlayerPos;
+		m_pBall->throwPosition = glm::vec2(xPlayerPos, 435);
+	}
+	
+	static float velocity[2] = { 10, 10 };
+	if (ImGui::SliderFloat2("Throw Speed", velocity, 0, 100)) {
+		m_pBall->throwSpeed = glm::vec2(velocity[0], -velocity[1]);
+	}
+
+	if (ImGui::SliderFloat("Ramp Height", &rampHeight, 0, 300))
+	    SetPoint();
+
+	if (ImGui::SliderFloat("Ramp Width", &rampWidth, 0, 400))
+		SetPoint();
+
 	ImGui::End();
+	ImGui::EndFrame();
 
 	// Don't Remove this
 	ImGui::Render();
 	ImGuiSDL::Render(ImGui::GetDrawData());
 	ImGui::StyleColorsDark();
 }
+
+void PlayScene::SetPoint()
+{
+	point[0] = glm::vec2(pointPosX, pointPosY);
+	point[1] = glm::vec2(pointPosX + rampWidth, pointPosY);
+	point[2] = glm::vec2(pointPosX, pointPosY - rampHeight);
+}
+
+
+
