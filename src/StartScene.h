@@ -24,7 +24,9 @@ private:
 	Label* m_pStartLabel{};
 	Label* m_pNameLabel{};
 	Label* m_pNameLabel2{};
-	Ship* m_pShip{};
+	Label* m_pNameLabel3{};
+
+	//Ship* m_pShip{};
 
 	Button* m_pStartButton;
 };

@@ -132,9 +132,9 @@ void PlayScene::start()
 	// Set GUI Title
 	m_guiTitle = "Play Scene";
 
-	//Ball
-	m_pBall = new Target();
-	addChild(m_pBall);
+	////Ball
+	//m_pBall = new Target();
+	//addChild(m_pBall);
 
 	// Player Sprite
 	m_pPlayer = new Player();
@@ -210,25 +210,25 @@ void PlayScene::GUI_Function()
 	ImGui::Begin("Physics Control", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
 
 	if (ImGui::Button("Throw")) {
-		m_pBall->doThrow();
+		//m_pBall->doThrow();
 	}
 
 	ImGui::Separator();
 
-	static bool isGravityEnabled = false;
-	if (ImGui::Checkbox("Gravity", &isGravityEnabled)) {
-		m_pBall->isGravityEnabled = isGravityEnabled;
-	}
+	//static bool isGravityEnabled = false;
+	//if (ImGui::Checkbox("Gravity", &isGravityEnabled)) {
+	//	//m_pBall->isGravityEnabled = isGravityEnabled;
+	//}
 	
 	static int xPlayerPos = 300;
 	if (ImGui::SliderInt("Player Position X", &xPlayerPos, 0, 800)) {
 		m_pPlayer->getTransform()->position.x = xPlayerPos;
-		m_pBall->throwPosition = glm::vec2(xPlayerPos, 435);
+		//m_pBall->throwPosition = glm::vec2(xPlayerPos, 435);
 	}
 	
 	static float velocity[2] = { 10, 10 };
 	if (ImGui::SliderFloat2("Throw Speed", velocity, 0, 100)) {
-		m_pBall->throwSpeed = glm::vec2(velocity[0], -velocity[1]);
+		//m_pBall->throwSpeed = glm::vec2(velocity[0], -velocity[1]);
 	}
 
 	if (ImGui::SliderFloat("Ramp Height", &rampHeight, 0, 300))
