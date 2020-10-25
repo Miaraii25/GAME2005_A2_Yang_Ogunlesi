@@ -53,11 +53,11 @@ void StartScene::start()
 	m_pStartLabel->setParent(this);
 	addChild(m_pStartLabel);
 
-	m_pNameLabel = new Label(" YANG (ID:101235517)","PinkChicken-Regular", 40, Orange, glm::vec2(400.0f, 180.0f));
+	m_pNameLabel = new Label(" YANG MINGKUN (ID:101235517)","PinkChicken-Regular", 40, Orange, glm::vec2(400.0f, 180.0f));
 	m_pNameLabel->setParent(this);
 	addChild(m_pNameLabel);
 
-	m_pNameLabel2 = new Label("OGUNLESI (ID:101285729)","PinkChicken-Regular", 40, Orange, glm::vec2(400.0f, 230.0f));
+	m_pNameLabel2 = new Label("OGUNLESI MARIAM (ID:101285729)","PinkChicken-Regular", 40, Orange, glm::vec2(400.0f, 230.0f));
 	m_pNameLabel2->setParent(this);
 	addChild(m_pNameLabel2);
 
