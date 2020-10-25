@@ -236,9 +236,9 @@ void PlayScene::GUI_Function()
 	ImGui::Begin("Physics Control", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
 
 	if (ImGui::Button("Play")) {
+		m_pBall->doThrow();
 		SetPoint();
-		//m_pBall->doThrow();
-		m_pBall->throwPosition = glm::vec2(pointPosX, pointPosY);
+		m_pBall->doesUpdate = true;
 	}
 
 	ImGui::Separator();

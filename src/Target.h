@@ -24,6 +24,8 @@ public:
 	float Mass;
 	float Gravity;
 	float Rotation;
+
+	bool doesUpdate = false;
 private:
 	void m_move();
 	void m_checkBounds();
