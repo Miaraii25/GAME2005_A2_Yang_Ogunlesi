@@ -26,7 +26,7 @@ void PlayScene::draw()
 	Util::DrawLine(point[0], point[1], LOSColour);
 	Util::DrawLine(point[1], point[2], LOSColour);
 	Util::DrawLine(point[2], point[0], LOSColour);
-	Util::DrawLine(point[0], glm::vec2(point[0].x + 500.0f, point[0].y), LOSColour);
+	Util::DrawLine(point[0], glm::vec2(point[0].x + 800.0f, point[0].y), LOSColour);
 
 	drawDisplayList();
 	SDL_SetRenderDrawColor(Renderer::Instance()->getRenderer(), 255, 255, 255, 255);
@@ -237,7 +237,7 @@ void PlayScene::GUI_Function()
 
 	if (ImGui::Button("Play")) {
 		SetPoint();
-		m_pBall->doThrow();
+		//m_pBall->doThrow();
 		m_pBall->throwPosition = glm::vec2(pointPosX, pointPosY);
 	}
 

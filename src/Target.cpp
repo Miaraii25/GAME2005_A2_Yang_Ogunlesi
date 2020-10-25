@@ -65,7 +65,13 @@ void Target::m_reset()
 }
 
 void Target::doThrow() {
-	getTransform()->position = throwPosition;
+	//getTransform()->position = throwPosition = glm::vec2(point[2].x + m_pBall->getWidth() / 2.5f, point[2].y - m_pBall->getHeight() / 2.5f);;
 	getRigidBody()->velocity = throwSpeed;
+
+	//theta = atan(rampHeight / rampWidth);
+
+	//m_pBall->Rotation = glm::degrees(theta);
+
+	//m_pBall->getTransform()->position = glm::vec2(point[2].x + m_pBall->getWidth() / 2.5f, point[2].y - m_pBall->getHeight() / 2.5f);
 }
 
