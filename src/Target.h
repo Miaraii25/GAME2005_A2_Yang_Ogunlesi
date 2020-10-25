@@ -19,10 +19,18 @@ public:
 	glm::vec2 throwPosition;
 
 	void doThrow();
+	
+
+	float Mass;
+	float Gravity;
+	float Rotation;
 private:
 	void m_move();
 	void m_checkBounds();
 	void m_reset();
+
+	
+	
 };
 
 
