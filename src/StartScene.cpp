@@ -53,7 +53,7 @@ void StartScene::start()
 	m_pStartLabel->setParent(this);
 	addChild(m_pStartLabel);
 
-	m_pNameLabel = new Label(" YANG (ID:101235517)","PinkChicken-Regular", 40, Orange, glm::vec2(400.0f, 180.0f));
+	m_pNameLabel = new Label("Mingkun YANG (ID:101235517)","PinkChicken-Regular", 40, Orange, glm::vec2(400.0f, 180.0f));
 	m_pNameLabel->setParent(this);
 	addChild(m_pNameLabel);
 
@@ -61,9 +61,6 @@ void StartScene::start()
 	m_pNameLabel2->setParent(this);
 	addChild(m_pNameLabel2);
 
-	m_pNameLabel3 = new Label("AROSHABEL MOORE  (ID:101156682)", "PinkChicken-Regular", 40, Orange, glm::vec2(400.0f, 280.0f));
-	m_pNameLabel3->setParent(this);
-	addChild(m_pNameLabel3);
 
 	/*m_pShip = new Ship();
 	m_pShip->getTransform()->position = glm::vec2(400.0f, 300.0f); 
