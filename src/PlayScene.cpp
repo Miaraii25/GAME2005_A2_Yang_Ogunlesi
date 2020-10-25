@@ -26,6 +26,7 @@ void PlayScene::draw()
 	Util::DrawLine(point[0], point[1], LOSColour);
 	Util::DrawLine(point[1], point[2], LOSColour);
 	Util::DrawLine(point[2], point[0], LOSColour);
+	Util::DrawLine(point[0], glm::vec2(point[0].x + 500.0f, point[0].y), LOSColour);
 
 	drawDisplayList();
 	SDL_SetRenderDrawColor(Renderer::Instance()->getRenderer(), 255, 255, 255, 255);
@@ -38,6 +39,29 @@ void PlayScene::draw()
 
 void PlayScene::update()
 {
+	/*if (m_pBall->doThrow())
+	{
+		if (!Addfriction) friction = 0.0f;
+		float xAccerlation = m_pBall->Mass * m_pBall->Gravity * cos(theta);
+		float yAccerlation = m_pBall->Mass * m_pBall->Gravity * sin(theta);
+
+		if (m_pBall->getTransform()->position.y >= point[1].y - m_pBall->getHeight() / 2)
+		{
+			theta = 0.0f;
+			yAccerlation = 0.0f;
+			m_pBall->getRigidBody()->velocity.y = 0.0f;
+			m_pBall->Rotation = 0.0f;
+			xAccerlation = -(friction * m_pBall->Mass * m_pBall->Gravity);
+
+			if (m_pBall->getRigidBody()->velocity.x <= 0)
+			{
+				xAccerlation = 0;
+				m_pBall->getRigidBody()->velocity.x = 0.0f;
+			}
+		}
+
+	}*/
+
 	updateDisplayList();
 }
 
@@ -134,6 +158,8 @@ void PlayScene::start()
 
 	//Ball
 	m_pBall = new Target();
+	m_pBall->Mass = 12.8f;
+	m_pBall->Gravity = 9.81f;
 	addChild(m_pBall);
 
 	// Player Sprite
@@ -204,32 +230,37 @@ void PlayScene::GUI_Function()
 	// Always open with a NewFrame
 	ImGui::NewFrame();
 
-	// See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
+	//See examples by uncommenting the following - also look at imgui_demo.cpp in the IMGUI filter
 	//ImGui::ShowDemoWindow();
 	
 	ImGui::Begin("Physics Control", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_MenuBar);
 
-	if (ImGui::Button("Throw")) {
+	if (ImGui::Button("Play")) {
+		SetPoint();
 		m_pBall->doThrow();
+		m_pBall->throwPosition = glm::vec2(pointPosX, pointPosY);
 	}
 
 	ImGui::Separator();
 
-	static bool isGravityEnabled = false;
+	/*static bool isGravityEnabled = false;
 	if (ImGui::Checkbox("Gravity", &isGravityEnabled)) {
 		m_pBall->isGravityEnabled = isGravityEnabled;
-	}
+	}*/
 	
-	static int xPlayerPos = 300;
+	/*static int xPlayerPos = 300;
 	if (ImGui::SliderInt("Player Position X", &xPlayerPos, 0, 800)) {
 		m_pPlayer->getTransform()->position.x = xPlayerPos;
 		m_pBall->throwPosition = glm::vec2(xPlayerPos, 435);
-	}
+	}*/
 	
-	static float velocity[2] = { 10, 10 };
+	/*static float velocity[2] = { 10, 10 };
 	if (ImGui::SliderFloat2("Throw Speed", velocity, 0, 100)) {
 		m_pBall->throwSpeed = glm::vec2(velocity[0], -velocity[1]);
-	}
+	}*/
+
+	if (ImGui::SliderFloat("Position", &pointPosX, 0, Config::SCREEN_WIDTH))
+		SetPoint();
 
 	if (ImGui::SliderFloat("Ramp Height", &rampHeight, 0, 300))
 	    SetPoint();
@@ -251,6 +282,12 @@ void PlayScene::SetPoint()
 	point[0] = glm::vec2(pointPosX, pointPosY);
 	point[1] = glm::vec2(pointPosX + rampWidth, pointPosY);
 	point[2] = glm::vec2(pointPosX, pointPosY - rampHeight);
+
+	theta = atan(rampHeight / rampWidth);
+
+	m_pBall->Rotation = glm::degrees(theta);
+
+	m_pBall->getTransform()->position = glm::vec2(point[2].x + m_pBall->getWidth() / 2.5f, point[2].y - m_pBall->getHeight() / 2.5f);
 }
 
 

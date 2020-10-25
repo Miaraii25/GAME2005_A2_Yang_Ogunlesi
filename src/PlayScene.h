@@ -55,7 +55,11 @@ private:
 	float rampWidth;
 	float pointPosX;
 	float pointPosY;
+
+	float friction;
+	float theta;
 	
+	bool Addfriction = false;
 	
 };
 
