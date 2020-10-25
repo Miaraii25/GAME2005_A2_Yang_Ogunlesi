@@ -46,12 +46,21 @@ void Target::m_move()
 	
 	getRigidBody()->velocity += (getRigidBody()->acceleration + gravity) * deltaTime;
 
-	if (isGravityEnabled) {
+	/*if (isGravityEnabled) {
 		getRigidBody()->velocity += (getRigidBody()->acceleration + gravity) * deltaTime;
 	}
 	else {
 		getRigidBody()->acceleration* deltaTime;
-	} 
+	} */
+
+	if (doesUpdate) {
+		getRigidBody()->velocity += 7.67f * deltaTime;
+		getRigidBody()->acceleration += 4.12f * deltaTime;
+	}
+	else {
+		getRigidBody()->velocity += 0.0f * deltaTime;
+		getRigidBody()->acceleration += 0.0f * deltaTime;
+	}
 
 	getTransform()->position += getRigidBody()->velocity * deltaTime * 1.0f;
 }
